@@ -25,9 +25,9 @@ def draw_image(layers):
         for y, row in enumerate(layer):
             for x, pixel in enumerate(row):
                 if pixel == '1':
-                    image[y][x] = '█'
+                    image[y][x] = '██'
                 elif pixel == '0':
-                    image[y][x] = ' '
+                    image[y][x] = '  '
     print('\n'.join(''.join(i) for i in image))
 
 
