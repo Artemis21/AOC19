@@ -17,17 +17,19 @@ class MultOp:
 class InpOp:
     params = 0
     code = 3
+    send_input = True
     @classmethod
-    def run(cls):
-        return (int(input('< ')),)
+    def run(cls, inp):
+        return (inp,)
 
 
 class OutOp:
     params = 1
     code = 4
+    send_output = True
     @classmethod
-    def run(cls, inp):
-        print('>', inp)
+    def run(cls, inp, out):
+        out.append(inp)
         return ()
 
 
@@ -81,8 +83,9 @@ OPS = {
 }
 
 
-def run(code):
+def run(code, p_input):
     pos = 0
+    outputs = []
     while True:
         op = code[pos]
         pos += 1
@@ -110,6 +113,10 @@ def run(code):
                 inps.append(code[raw])
             else:
                 inps.append(raw)
+        if getattr(op, 'send_input', False):
+            inps.append(p_input)
+        if getattr(op, 'send_output', False):
+            inps.append(outputs)
         out = op.run(*inps)
         if type(out) == int:
             pos = out
@@ -118,6 +125,7 @@ def run(code):
                 place = code[pos]
                 pos += 1
                 code[place] = i
+    return outputs
 
 
 def get_inp():
@@ -130,8 +138,14 @@ def main():
     run(get_inp())
 
 
+def part_a():
+    return run(get_inp(), 1)[-1]
+
+
+def part_b():
+    return run(get_inp(), 5)[0]
+
+
 if __name__ == '__main__':
-    print('5A (Send input: 1, output: last output)')
-    main()
-    print('5B (Send input: 5, output: last (only) output)')
-    main()
+    print('5A:', part_a())
+    print('5B:', part_b())

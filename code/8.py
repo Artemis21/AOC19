@@ -28,7 +28,7 @@ def draw_image(layers):
                     image[y][x] = '██'
                 elif pixel == '0':
                     image[y][x] = '  '
-    print('\n'.join(''.join(i) for i in image))
+    return '\n'.join(''.join(i) for i in image)
 
 
 def part_a():
@@ -45,8 +45,8 @@ def part_a():
 
 
 def part_b():
-    draw_image(get_layers(get_inp()))
-    return 'See above ^^^'
+    img = draw_image(get_layers(get_inp()))
+    return '\n' + img
 
 
 if __name__ == '__main__':
