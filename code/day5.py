@@ -129,7 +129,7 @@ def run(code, p_input):
 
 
 def get_inp():
-    with open('5.txt') as f:
+    with open('code/5.txt') as f:
         raw = f.read()
     return [*map(int, raw.split(','))]
 

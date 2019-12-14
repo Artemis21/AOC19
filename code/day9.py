@@ -1,6 +1,3 @@
-import sys
-
-
 class Command:
     @staticmethod
     def write(master, val):
@@ -92,17 +89,26 @@ CMDS = {
 
 
 class Computer:
-    def __init__(self, code):
+    def __init__(self, code, inputs=[]):
         self.code = code
         self.pointer = 0
         self.relbase = 0
         self.extra = {}
+        self.inputs = list(inputs)
+        self.output = []
         self.relmode = False
         self.increase = 0
 
     def run(self):
         while not self.loop():
             pass
+        return self.output
+
+    def stdin(self):
+        return self.inputs.pop(0)
+
+    def stdout(self, out):
+        self.output.append(out)
 
     def loop(self):
         op = self.next(command=True)
@@ -174,85 +180,18 @@ class Computer:
 
 
 def get_inp():
-    with open('13.txt') as f:
+    with open('code/9.txt') as f:
         return list(map(int, f.read().split(',')))
-        
-        
-class Screen:
-	def __init__(self, w=60, h=30):
-		self.w = w
-		self.h = h
-		self.data = {}
-		self.scoreval = 0
-		
-	def add(self, x, y, tile):
-		tile = ' X#=o'[tile]
-		self.data[(x, y)] = tile
-		
-	def score(self, new):
-		self.scoreval = new
-		
-	def draw(self):
-		p = ''
-		for y in range(self.h):
-			l = '\n'
-			for x in range(self.w):
-				l += self.data.get((x, y), ' ')
-			p += l
-		print(p + '\n\n' + str(self.scoreval))
 
 
-class Game(Computer):
-	def __init__(self, code):
-		super().__init__(code)
-		self.screen = Screen()
-		self.out = 'x'
-		self.x = None
-		self.y = None
-		
-	def stdout(self, out):
-		if self.out == 'x':
-			self.x = out
-			self.out = 'y'
-		elif self.out == 'y':
-			self.y = out
-			self.out = 'tile'
-		else:
-			if (self.x, self.y) == (-1, 0):
-				self.screen.score(out)
-			else:
-				self.screen.add(self.x, self.y, out)
-			self.out = 'x'
-			
-	def stdin(self):
-		screen = self.screen.data
-		for i in screen:
-			if screen[i] == '=':
-				paddle = i[0]
-			elif screen[i] == 'o':
-				ball = i[0]
-		if paddle > ball:
-			return -1
-		elif paddle < ball:
-			return 1
-		return 0
-		
-			
-			
 def part_a():
-	g = Game(get_inp())
-	g.run()
-	return sum(g.screen.data[i] == '#' for i in g.screen.data)
-	
-	
+    return Computer(get_inp(), [1]).run()[0]
+
+
 def part_b():
-	i = get_inp()
-	i[0] = 2
-	g = Game(i)
-	g.run()
-	return g.screen.scoreval
-	
-	
+    return Computer(get_inp(), [2]).run()[0]
+
+
 if __name__ == '__main__':
-	print('13A:', part_a())
-	print('13B:', part_b())
+    print('9A:', part_a())
+    print('9B:', part_b())

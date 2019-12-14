@@ -2,6 +2,13 @@ import importlib
 import time
 
 
+LAST = 14
+
+
+def load(num):
+    return importlib.import_module(f'.day{num}', __package__)
+
+
 def wait(fun):
     s = time.time()
     v = fun()
@@ -9,20 +16,41 @@ def wait(fun):
     return v, e-s
 
 
-print('Running Advent of Code 2019 solutions:')
-start = time.time()
+def run_part(num, part, module=None):
+    if not module:
+        module = load(num)
+    if part == 'A':
+        fun = module.part_a
+    else:
+        fun = module.part_b
+    val, t = wait(fun)
+    print(f'{num:>3}{part}: {val:<10} ({t:.3}s)')
+    return t
 
 
-for i in range(1, 12):
-    name = f'{i}'
-    module = importlib.import_module(name, '.')
-    av, at = wait(module.part_a)
-    print(f'{i:>3}A: {av:<10} ({at:.3}s)')
-    bv, bt = wait(module.part_b)
-    print(f'{i:>3}B: {bv:<10} ({bt:.3}s)')
+def run_challenge(num):
+    module = load(num)
+    atime = run_part(num, 'A', module)
+    btime = run_part(num, 'B', module)
+    return atime + btime
 
 
-end = time.time()
-total = end - start
-print(f'Total time: {total:.3}s.')
-print(f'Average per challenge part: {total/11:.3}s')
+def run_parts(*parts):
+    for i in parts:
+        if i[-1].upper() not in ('A', 'B'):
+            run_challenge(int(i))
+        else:
+            num = int(i[:-1])
+            part = i[-1].upper()
+            run_part(num, part)
+
+
+def run_all():
+    print('Running Advent of Code 2019 solutions:')
+    total = 0
+    for i in range(1, LAST+1):
+        total += run_challenge(i)
+    avg = total / (LAST * 2)
+    print(
+        f'Total time: {total:.3}s | Average time per challange part: {avg:.3}s'
+    )

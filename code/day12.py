@@ -64,7 +64,7 @@ class Coords:
 
 
 def get_inp():
-    with open('12.txt') as f:
+    with open('code/12.txt') as f:
         return list(map(Moon.load, f))
 
 

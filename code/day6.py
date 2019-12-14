@@ -11,7 +11,7 @@ def orbits(inp):
 
 
 def inp():
-    with open('6.txt') as f:
+    with open('code/6.txt') as f:
         raw = f.read()
     return [i.split(')') for i in raw.split('\n')]
 

@@ -69,7 +69,7 @@ def max_visibility(grid):
 
 
 def get_inp():
-    with open('10.txt') as f:
+    with open('code/10.txt') as f:
         raw = f.read().strip()
     grid = []
     for row in raw.split('\n'):

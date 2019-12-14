@@ -94,21 +94,12 @@ class Computer:
         self.pointer = 0
         self.relbase = 0
         self.extra = {}
-        self.inputs = list(inputs)
-        self.output = []
         self.relmode = False
         self.increase = 0
 
     def run(self):
         while not self.loop():
             pass
-        return self.output
-
-    def stdin(self):
-        return self.inputs.pop(0)
-
-    def stdout(self, out):
-        self.output.append(out)
 
     def loop(self):
         op = self.next(command=True)
@@ -180,18 +171,71 @@ class Computer:
 
 
 def get_inp():
-    with open('9.txt') as f:
+    with open('code/11.txt') as f:
         return list(map(int, f.read().split(',')))
 
 
+class Robot(Computer):
+    def __init__(self, code):
+        super().__init__(code)
+        self.x = 0
+        self.y = 0
+        self.dir = 0
+        self.white = set()
+        self.painted = set()
+        self.paint = True
+
+    def stdin(self):
+        return int((self.x, self.y) in self.white)
+
+    def stdout(self, out):
+        if self.paint:
+            self.painted.add((self.x, self.y))
+            if out:
+                self.white.add((self.x, self.y))
+            else:
+                self.white.discard((self.x, self.y))
+        else:
+            if out:
+                self.dir += 1
+            else:
+                self.dir -= 1
+            self.dir %= 4
+            if self.dir == 0:
+                self.y -= 1
+            elif self.dir == 1:
+                self.x += 1
+            elif self.dir == 2:
+                self.y += 1
+            else:
+                self.x -= 1
+        self.paint = not self.paint
+
+    def disp(self):
+        p = ''
+        for y in range(6):
+            p += '\n'
+            for x in range(1, 40):
+                if (x, y) in self.white:
+                    p += '██'
+                else:
+                    p += '  '
+        return p
+
+
 def part_a():
-    return Computer(get_inp(), [1]).run()[0]
+    ehpr = Robot(get_inp())
+    ehpr.run()
+    return len(ehpr.painted)
 
 
 def part_b():
-    return Computer(get_inp(), [2]).run()[0]
+    ephr = Robot(get_inp())
+    ephr.white.add((0, 0))
+    ephr.run()
+    return ephr.disp()
 
 
 if __name__ == '__main__':
-    print('9A:', part_a())
-    print('9B:', part_b())
+    print('11A:', part_a())
+    print('11B:', part_b())

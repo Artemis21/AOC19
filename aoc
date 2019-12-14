@@ -1,0 +1,21 @@
+#! /usr/bin/env python3
+
+import code
+import sys
+
+
+if __name__ == '__main__':
+    try:
+        if len(sys.argv) == 1:
+            code.run_all()
+        else:
+            code.run_parts(*sys.argv[1:])
+    except Exception as e:
+        print(e)
+        print(
+            'Utility to run Advent of Code solutions. Includes timing.\n'
+            'Examples:\n'
+            '   "aoc" --> run every solution\n'
+            '   "aoc 2a 3b 4" --> run solutions 2a, 3b, 4a and 4b\n'
+            '   "aoc [anything else]" --> output this text\n'
+        )

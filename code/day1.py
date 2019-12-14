@@ -15,7 +15,7 @@ def complete_fuel(mass):
 
 
 def get_inp():
-    with open('1.txt') as f:
+    with open('code/1.txt') as f:
         return tuple(map(int, f))
 
 

@@ -15,7 +15,7 @@ def get_layers(raw):
 
 
 def get_inp():
-    with open('8.txt') as f:
+    with open('code/8.txt') as f:
         return f.read().strip()
 
 

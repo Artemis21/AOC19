@@ -161,7 +161,7 @@ class PartA:
         return [[*i] for i in itertools.permutations(range(start, end))]
 
     def get_inp(self):
-        with open('7.txt') as f:
+        with open('code/7.txt') as f:
             raw = f.read()
         return [*map(int, raw.split(','))]
 

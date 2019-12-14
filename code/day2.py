@@ -1,4 +1,4 @@
-with open('2.txt') as f:
+with open('code/2.txt') as f:
     raw = f.read()
 IN = eval('[' + raw + ']')
 

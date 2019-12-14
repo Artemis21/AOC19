@@ -42,7 +42,7 @@ def trace_wire(wire):
 
 
 def inp():
-    with open('3.txt') as f:
+    with open('code/3.txt') as f:
         raw = f.read()
     split = raw.split('\n')
     a = split[0].split(',')

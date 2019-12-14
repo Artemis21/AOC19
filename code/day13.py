@@ -1,3 +1,6 @@
+import sys
+
+
 class Command:
     @staticmethod
     def write(master, val):
@@ -89,7 +92,7 @@ CMDS = {
 
 
 class Computer:
-    def __init__(self, code, inputs=[]):
+    def __init__(self, code):
         self.code = code
         self.pointer = 0
         self.relbase = 0
@@ -171,71 +174,84 @@ class Computer:
 
 
 def get_inp():
-    with open('11.txt') as f:
+    with open('code/13.txt') as f:
         return list(map(int, f.read().split(',')))
 
 
-class Robot(Computer):
+class Screen:
+    def __init__(self, w=60, h=30):
+        self.w = w
+        self.h = h
+        self.data = {}
+        self.scoreval = 0
+
+    def add(self, x, y, tile):
+        tile = ' X#=o'[tile]
+        self.data[(x, y)] = tile
+
+    def score(self, new):
+        self.scoreval = new
+
+    def draw(self):
+        p = ''
+        for y in range(self.h):
+            l = '\n'
+            for x in range(self.w):
+                l += self.data.get((x, y), ' ')
+            p += l
+        print(p + '\n\n' + str(self.scoreval))
+
+
+class Game(Computer):
     def __init__(self, code):
         super().__init__(code)
-        self.x = 0
-        self.y = 0
-        self.dir = 0
-        self.white = set()
-        self.painted = set()
-        self.paint = True
-
-    def stdin(self):
-        return int((self.x, self.y) in self.white)
+        self.screen = Screen()
+        self.out = 'x'
+        self.x = None
+        self.y = None
 
     def stdout(self, out):
-        if self.paint:
-            self.painted.add((self.x, self.y))
-            if out:
-                self.white.add((self.x, self.y))
-            else:
-                self.white.discard((self.x, self.y))
+        if self.out == 'x':
+            self.x = out
+            self.out = 'y'
+        elif self.out == 'y':
+            self.y = out
+            self.out = 'tile'
         else:
-            if out:
-                self.dir += 1
+            if (self.x, self.y) == (-1, 0):
+                self.screen.score(out)
             else:
-                self.dir -= 1
-            self.dir %= 4
-            if self.dir == 0:
-                self.y -= 1
-            elif self.dir == 1:
-                self.x += 1
-            elif self.dir == 2:
-                self.y += 1
-            else:
-                self.x -= 1
-        self.paint = not self.paint
+                self.screen.add(self.x, self.y, out)
+            self.out = 'x'
 
-    def disp(self):
-        p = ''
-        for y in range(6):
-            p += '\n'
-            for x in range(1, 40):
-                if (x, y) in self.white:
-                    p += '██'
-                else:
-                    p += '  '
-        return p
+    def stdin(self):
+        screen = self.screen.data
+        for i in screen:
+            if screen[i] == '=':
+                paddle = i[0]
+            elif screen[i] == 'o':
+                ball = i[0]
+        if paddle > ball:
+            return -1
+        elif paddle < ball:
+            return 1
+        return 0
 
 
 def part_a():
-    ehpr = Robot(get_inp())
-    ehpr.run()
-    return len(ehpr.painted)
+    g = Game(get_inp())
+    g.run()
+    return sum(g.screen.data[i] == '#' for i in g.screen.data)
 
 
 def part_b():
-    ephr = Robot(get_inp())
-    ephr.white.add((0, 0))
-    ephr.run()
-    return ephr.disp()
+    i = get_inp()
+    i[0] = 2
+    g = Game(i)
+    g.run()
+    return g.screen.scoreval
 
 
 if __name__ == '__main__':
-    print('11A:', part_a())
-    print('11B:', part_b())
+    print('13A:', part_a())
+    print('13B:', part_b())
